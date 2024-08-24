@@ -9,6 +9,9 @@ def match_pattern(input_line, pattern):
         return pattern in input_line
     else:
         raise RuntimeError(f"Unhandled pattern: {pattern}")
+    
+def match_for_integer(input_line):
+    return any(char.isdigit() for char in input_line)
 
 
 def main():
@@ -21,6 +24,12 @@ def main():
 
     # You can use print statements as follows for debugging, they'll be visible when running tests.
     print("Logs from your program will appear here!")
+    
+    if pattern == "\\d":
+        if match_for_integer(input_line):
+            exit(0)
+        else:
+            exit(1)
 
     # Uncomment this block to pass the first stage
     if match_pattern(input_line, pattern):
