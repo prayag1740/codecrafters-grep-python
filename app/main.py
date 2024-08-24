@@ -25,7 +25,7 @@ def main():
     # Uncomment this block to pass the first stage
     if match_pattern(input_line, pattern):
         exit(0)
-    # else:
+    else:
         exit(1)
 
 
