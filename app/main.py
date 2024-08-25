@@ -13,6 +13,9 @@ def match_pattern(input_line, pattern):
 def match_for_integer(input_line):
     return any(char.isdigit() for char in input_line)
 
+def match_for_alphanumeric(input_line):
+    return any(char.isdigit() or char.isalpha() for char in input_line)
+
 
 def main():
     pattern = sys.argv[2]
@@ -27,6 +30,12 @@ def main():
     
     if pattern == "\\d":
         if match_for_integer(input_line):
+            exit(0)
+        else:
+            exit(1)
+            
+    if pattern == "\\w":
+        if match_for_alphanumeric(input_line):
             exit(0)
         else:
             exit(1)
