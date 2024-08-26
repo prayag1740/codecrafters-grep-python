@@ -30,6 +30,32 @@ def match_for_negative_char_groups(input_line, pattern):
             return False
     return True
 
+def match_for_combined_char_class(input_line, pattern):
+    j = 0
+    i = 0
+    
+    while i < len(pattern):
+        ch_ip = pattern[i]
+        if ch_ip == "\\":
+            i = i +1
+            ch_ip_next = pattern[i]
+            if ch_ip_next == "d":
+                if not match_for_integer(input_line[j]):
+                    return False
+                j +=1
+            elif ch_ip_next == "w":
+                if not match_for_alphanumeric(input_line[j]):
+                    return False
+                j +=1
+        else:
+            if input_line[j] != pattern[i]:
+                return False
+            j +=1
+        i +=1
+            
+    return True
+                
+
 def main():
     pattern = sys.argv[2]
     input_line = sys.stdin.read()
@@ -67,11 +93,21 @@ def main():
         else:
             exit(1)
             
-    # Uncomment this block to pass the first stage
-    if match_pattern(input_line, pattern):
+    if len(pattern) == 1:
+        if match_pattern(input_line, pattern):
+            exit(0)
+        else:
+            exit(1)
+          
+            
+    #check for combined char class
+    if match_for_combined_char_class(input_line, pattern):
+        print("yyy")
         exit(0)
     else:
+        print("noo")
         exit(1)
+    
 
 
 if __name__ == "__main__":
