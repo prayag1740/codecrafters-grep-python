@@ -31,29 +31,28 @@ def match_for_negative_char_groups(input_line, pattern):
     return True
 
 def match_for_combined_char_class(input_line, pattern):
-    j = 0
-    i = 0
+    if len(input_line) == 0 and len(pattern) == 0:
+        return True
+    if not pattern:
+        return True
+    if not input_line:
+        return False
     
-    while i < len(pattern):
-        ch_ip = pattern[i]
-        if ch_ip == "\\":
-            i = i +1
-            ch_ip_next = pattern[i]
-            if ch_ip_next == "d":
-                if not match_for_integer(input_line[j]):
-                    return False
-                j +=1
-            elif ch_ip_next == "w":
-                if not match_for_alphanumeric(input_line[j]):
-                    return False
-                j +=1
+    if pattern[0] == input_line[0]:
+        return match_for_combined_char_class(input_line[1:], pattern[1:])
+    elif pattern[:2] == "\\d":
+        for i in range(len(input_line)):
+            if input_line[i].isdigit():
+                return match_for_combined_char_class(input_line[i+1:], pattern[2:])
         else:
-            if input_line[j] != pattern[i]:
-                return False
-            j +=1
-        i +=1
-            
-    return True
+            return False
+    elif pattern[:2] == "\\w":
+        if input_line[0].isalnum():
+            return match_for_combined_char_class(input_line[1:], pattern[2:])
+        else:
+            return False
+    
+    
                 
 
 def main():
