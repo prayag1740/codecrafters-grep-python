@@ -33,10 +33,18 @@ def match_for_negative_char_groups(input_line, pattern):
 def match_for_combined_char_class(input_line, pattern):
     if len(input_line) == 0 and len(pattern) == 0:
         return True
+    
+    if pattern == "$":
+        # print(pattern, input_line, len(input_line))
+        if not input_line:
+            return True
+        return False
+    
     if not pattern:
         return True
     if not input_line:
         return False
+    
     
     if pattern[0] == input_line[0]:
         return match_for_combined_char_class(input_line[1:], pattern[1:])
@@ -101,6 +109,8 @@ def main():
           
             
     #check for combined char class
+    # print(input_line, len(input_line), input_line[0], input_line[3])
+    input_line = input_line.rstrip()
     if match_for_combined_char_class(input_line, pattern):
         print("yyy")
         exit(0)
