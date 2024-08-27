@@ -51,8 +51,9 @@ def match_for_combined_char_class(input_line, pattern):
             return match_for_combined_char_class(input_line[1:], pattern[2:])
         else:
             return False
-    
-    
+    elif pattern[:1] == "^":
+        return match_for_combined_char_class(input_line, pattern[1:])
+        
                 
 
 def main():
