@@ -31,11 +31,11 @@ def match_for_negative_char_groups(input_line, pattern):
     return True
 
 def match_for_combined_char_class(input_line, pattern):
+    print(input_line, pattern, "****************")
     if len(input_line) == 0 and len(pattern) == 0:
         return True
     
     if pattern == "$":
-        # print(pattern, input_line, len(input_line))
         if not input_line:
             return True
         return False
@@ -46,7 +46,19 @@ def match_for_combined_char_class(input_line, pattern):
         return False
     
     
-    if pattern[0] == input_line[0]:
+    if pattern[:2][-1] == "+":
+        last_char = pattern[:2][0]
+        if input_line[0] != last_char:
+            return False
+        else:
+            for i in range(len(input_line)):
+                if input_line[i] == last_char:
+                    continue
+                else:
+                    break
+            return match_for_combined_char_class(input_line[i:], pattern[2:])
+    
+    elif pattern[0] == input_line[0]:
         return match_for_combined_char_class(input_line[1:], pattern[1:])
     elif pattern[:2] == "\\d":
         for i in range(len(input_line)):
@@ -58,7 +70,8 @@ def match_for_combined_char_class(input_line, pattern):
         if input_line[0].isalnum():
             return match_for_combined_char_class(input_line[1:], pattern[2:])
         else:
-            return False
+            return False            
+        
     elif pattern[:1] == "^":
         return match_for_combined_char_class(input_line, pattern[1:])
         
