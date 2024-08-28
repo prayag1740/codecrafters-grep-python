@@ -40,9 +40,17 @@ def match_for_wildcard(input_line, pattern):
         return False
     if start_idx < end_idx:
         return True
+    
+last_reference = None
 
 def match_for_combined_char_class(input_line, pattern):
-    print(input_line, pattern)
+    global last_reference
+    print(f"input is : {input_line}" )
+    print(f"pattern is : {pattern}" )
+    print(f"pattern stripped is : {pattern[:2]}" )
+    print(f"last reference is : {last_reference}" )
+    
+    print("***********************************************************************")
     if len(input_line) == 0 and len(pattern) == 0:
         return True
     
@@ -51,7 +59,7 @@ def match_for_combined_char_class(input_line, pattern):
             return True
         return False
     
-    if pattern and pattern[0] == "(":
+    if pattern and pattern[0] == "(" and "|" in pattern:
         idx = pattern.find(")")
         pattern_split = pattern[1:idx].split("|")
         for p in pattern_split:
@@ -59,6 +67,35 @@ def match_for_combined_char_class(input_line, pattern):
                 return True            
         return False
     
+    if pattern and pattern[:2] == "\\1":
+        temp_input = input_line.split(" ")[0]
+        if temp_input == last_reference:
+            return match_for_combined_char_class(input_line[len(temp_input):], pattern[2:])
+        return False
+    
+    if pattern and pattern[0] == "(" and "|" not in pattern:
+        idx = pattern.find(")")
+        pattern_temp = pattern[1:idx]
+        if pattern_temp == "\\w+":
+            temp_input = input_line.split(" ")[0]
+            if temp_input.isalnum():
+                last_reference = temp_input
+                return match_for_combined_char_class(input_line[len(temp_input):], pattern[idx+1:])
+            else:
+                return False
+        elif pattern_temp == "\\d+":
+            temp_input = input_line.split(" ")[0]
+            if temp_input.isdigit():
+                last_reference = temp_input
+                return match_for_combined_char_class(input_line[len(temp_input):], pattern[idx+1:])
+            else:
+                return False
+        else:
+            temp_input = input_line.split(" ")[0]
+            last_reference = temp_input
+            return match_for_combined_char_class(input_line[len(temp_input):], pattern[idx+1:])
+            
+                
     if len(pattern) > 2 and pattern[:2][-1] == "?" and not input_line:
         return True 
     
@@ -117,6 +154,12 @@ def main():
     if sys.argv[1] != "-E":
         print("Expected first argument to be '-E'")
         exit(1)
+    
+    # pattern = "(\\w+) and \\1"
+    # input_line = "dog and cat"
+    # pattern = "(cat) and \\1"
+    # input_line = "cat and cat"
+    
     
     # You can use print statements as follows for debugging, they'll be visible when running tests.
     print("Logs from your program will appear here!")
@@ -181,6 +224,7 @@ def main():
                     exit(0)
                 exit(1)
                 
+    last_reference = None
     if match_for_combined_char_class(input_line, pattern):
         print('YYYY')
         exit(0)
