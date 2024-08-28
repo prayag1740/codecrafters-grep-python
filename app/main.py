@@ -31,7 +31,7 @@ def match_for_negative_char_groups(input_line, pattern):
     return True
 
 def match_for_combined_char_class(input_line, pattern):
-    print(input_line, pattern, "****************")
+    
     if len(input_line) == 0 and len(pattern) == 0:
         return True
     
@@ -40,16 +40,30 @@ def match_for_combined_char_class(input_line, pattern):
             return True
         return False
     
+    if len(pattern) > 2 and pattern[:2][-1] == "?" and not input_line:
+        return True 
+    
     if not pattern:
         return True
     if not input_line:
         return False
     
-    
     if pattern[:2][-1] == "+":
         last_char = pattern[:2][0]
         if input_line[0] != last_char:
             return False
+        else:
+            for i in range(len(input_line)):
+                if input_line[i] == last_char:
+                    continue
+                else:
+                    break
+            return match_for_combined_char_class(input_line[i:], pattern[2:])
+        
+    elif pattern[:2][-1] == "?":
+        last_char = pattern[:2][0]
+        if input_line[0] != last_char:
+            return match_for_combined_char_class(input_line, pattern[2:])
         else:
             for i in range(len(input_line)):
                 if input_line[i] == last_char:
@@ -84,7 +98,7 @@ def main():
     if sys.argv[1] != "-E":
         print("Expected first argument to be '-E'")
         exit(1)
-
+    
     # You can use print statements as follows for debugging, they'll be visible when running tests.
     print("Logs from your program will appear here!")
     
@@ -124,11 +138,19 @@ def main():
     #check for combined char class
     # print(input_line, len(input_line), input_line[0], input_line[3])
     input_line = input_line.rstrip()
+    if "?" in pattern:
+        first_letter_pat = pattern[0]
+        for i in range(len(input_line)):
+            if input_line[i] == first_letter_pat:
+                if match_for_combined_char_class(input_line[i:], pattern):
+                    exit(0)
+                exit(1)
+                
     if match_for_combined_char_class(input_line, pattern):
-        print("yyy")
+        print('YYYY')
         exit(0)
     else:
-        print("noo")
+        print("NNN")
         exit(1)
     
 
