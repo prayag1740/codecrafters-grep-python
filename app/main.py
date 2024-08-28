@@ -30,6 +30,17 @@ def match_for_negative_char_groups(input_line, pattern):
             return False
     return True
 
+def match_for_wildcard(input_line, pattern):
+    pattern_split = pattern.split(".")
+    before_pattern = pattern_split[0]
+    after_pattern = pattern_split[1]
+    start_idx = input_line.find(before_pattern)
+    end_idx = input_line.find(after_pattern)
+    if start_idx == -1 or end_idx == -1:
+        return False
+    if start_idx < end_idx:
+        return True
+
 def match_for_combined_char_class(input_line, pattern):
     
     if len(input_line) == 0 and len(pattern) == 0:
@@ -133,8 +144,15 @@ def main():
             exit(0)
         else:
             exit(1)
-          
             
+    if "." in pattern:
+        if match_for_wildcard(input_line, pattern):
+            print("YY")
+            exit(0)
+        else:
+            print("NN")
+            exit(1)
+          
     #check for combined char class
     # print(input_line, len(input_line), input_line[0], input_line[3])
     input_line = input_line.rstrip()
