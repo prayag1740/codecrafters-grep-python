@@ -42,13 +42,21 @@ def match_for_wildcard(input_line, pattern):
         return True
 
 def match_for_combined_char_class(input_line, pattern):
-    
+    print(input_line, pattern)
     if len(input_line) == 0 and len(pattern) == 0:
         return True
     
     if pattern == "$":
         if not input_line:
             return True
+        return False
+    
+    if pattern and pattern[0] == "(":
+        idx = pattern.find(")")
+        pattern_split = pattern[1:idx].split("|")
+        for p in pattern_split:
+            if match_for_combined_char_class(input_line, p+pattern[idx+1:]):
+                return True            
         return False
     
     if len(pattern) > 2 and pattern[:2][-1] == "?" and not input_line:
@@ -152,6 +160,15 @@ def main():
         else:
             print("NN")
             exit(1)
+            
+    # if "|" in pattern:
+    #     pattern = pattern[1:-1]
+    #     split_data = pattern.split("|")
+    #     for p in split_data:
+    #         print(p, input_line)
+    #         if p in input_line:
+    #             exit(0)
+    #     exit(1)
           
     #check for combined char class
     # print(input_line, len(input_line), input_line[0], input_line[3])
